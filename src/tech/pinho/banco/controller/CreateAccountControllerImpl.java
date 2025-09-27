@@ -42,11 +42,16 @@ public class CreateAccountControllerImpl implements CreateAccountController, Men
             }
         } while (nascimento == null);
 
-        Owner owner = createOwnerService.execute(nome, cpf, nascimento);
+        try {
 
-        Account account = openAccountService.execute(owner, AccountType.CONTA_CORRENTE);
+            Owner owner = createOwnerService.execute(nome, cpf, nascimento);
+            Account account = openAccountService.execute(owner, AccountType.CONTA_CORRENTE);
+            System.out.println("A conta " + account + " foi criada com sucesso!");
 
-        System.out.println("A conta " + account + " foi criada com sucesso!");
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     @Override
