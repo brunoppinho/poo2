@@ -1,6 +1,7 @@
 package tech.pinho.banco.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface Repository<T, E> {
 
@@ -10,5 +11,5 @@ public interface Repository<T, E> {
 
     List<T> findAll();
 
-    T findById(E id);
+    Optional<T> findById(E id);
 }

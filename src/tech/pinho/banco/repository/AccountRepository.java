@@ -4,6 +4,7 @@ import tech.pinho.banco.model.Account;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AccountRepository implements Repository<Account, Integer> {
 
@@ -40,7 +41,11 @@ public class AccountRepository implements Repository<Account, Integer> {
     }
 
     @Override
-    public Account findById(Integer id) {
-        return accounts.get(id - 1);
+    public Optional<Account> findById(Integer id) {
+        try {
+            return Optional.ofNullable(accounts.get(id - 1));
+        } catch (IndexOutOfBoundsException e) {
+            return Optional.empty();
+        }
     }
 }

@@ -18,7 +18,7 @@ public class WithdrawalGenerateTransactionServiceImpl implements GenerateTransac
 
     @Override
     public void execute(int accountNumber, BigDecimal amount, String description) {
-        Account account = accountRepository.findById(accountNumber);
+        Account account = accountRepository.findById(accountNumber).orElseThrow();
         if (account == null) {
             System.out.println("Account not found");
             return;
