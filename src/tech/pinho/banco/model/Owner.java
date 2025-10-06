@@ -1,8 +1,9 @@
 package tech.pinho.banco.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Owner {
+public class Owner implements Serializable {
 
     private String cpf;
     private String nome;
