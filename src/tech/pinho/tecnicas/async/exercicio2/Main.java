@@ -6,10 +6,15 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Main {
 
     public static void main(String[] args) {
+        Runtime runtime = Runtime.getRuntime();
+
         List<Path> paths = List.of(Paths.get("dados1.txt"),
                 Paths.get("dados2.txt"),
                 Paths.get("dados3.txt"),
@@ -21,7 +26,13 @@ public class Main {
         Instant begin = Instant.now();
         long total = 0;
 
-        total = funcao4(paths);
+        long antes = runtime.totalMemory() - runtime.freeMemory();
+
+        total = funcao5(paths);
+
+        long depois = runtime.totalMemory() - runtime.freeMemory();
+        System.out.printf("Memória usada pela tarefa: %.2f MB%n",
+                (depois - antes) / 1024.0 / 1024.0);
 
         System.out.println("O total de linhas foi de " + total);
         Instant end = Instant.now();
@@ -59,5 +70,20 @@ public class Main {
 
     }
 
+    public static long funcao5(List<Path> paths) {
+        try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
+            return paths.stream()
+                    .map(path -> executorService.submit(() -> ContadorDeLinhas.contar(path)))
+                    .mapToLong(future -> {
+                        try {
+                            return future.get();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .sum();
+        }
+
+    }
 
 }
