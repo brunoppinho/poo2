@@ -21,6 +21,12 @@ public class Main {
                 Paths.get("dados4.txt"),
                 Paths.get("dados5.txt"),
                 Paths.get("dados6.txt"),
+                Paths.get("dados7.txt"),
+                Paths.get("dados2.txt"),
+                Paths.get("dados3.txt"),
+                Paths.get("dados4.txt"),
+                Paths.get("dados5.txt"),
+                Paths.get("dados6.txt"),
                 Paths.get("dados7.txt")
         );
         Instant begin = Instant.now();
@@ -28,7 +34,7 @@ public class Main {
 
         long antes = runtime.totalMemory() - runtime.freeMemory();
 
-        total = funcao5(paths);
+        total = funcao41(paths);
 
         long depois = runtime.totalMemory() - runtime.freeMemory();
         System.out.printf("Memória usada pela tarefa: %.2f MB%n",
@@ -67,6 +73,17 @@ public class Main {
                 .reduce((f1, f2) -> f2.thenCombine(f1, Long::sum))
                 .orElseThrow()
                 .join();
+
+    }
+
+    public static long funcao41(List<Path> paths) {
+        try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
+            return paths.stream()
+                    .map(path -> CompletableFuture.supplyAsync(() -> ContadorDeLinhas.contar(path), executorService))
+                    .reduce((f1, f2) -> f2.thenCombine(f1, Long::sum))
+                    .orElseThrow()
+                    .join();
+        }
 
     }
 
